@@ -27,7 +27,6 @@ static NSString *CellIdentifier = @"Cell";
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
 
 //    self.initialCities = [@[@"London", @"SF", @"Tokyo"] mutableCopy];
 //    [self.myTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
