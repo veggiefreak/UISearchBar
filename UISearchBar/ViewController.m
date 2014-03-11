@@ -10,17 +10,29 @@
 
 @interface ViewController ()
 
+@property (weak, nonatomic) IBOutlet UISearchBar *mySearchBar;
+@property (weak, nonatomic) IBOutlet UITableView *myTableView;
+
+@property (nonatomic, strong) NSMutableArray * initialCities;
+@property (nonatomic, strong) NSMutableArray * filteredCities;
+
+@property BOOL isFiltered;
+
 @end
 
 @implementation ViewController
-@synthesize mySearchBar, myTableView, initialCities, filteredCities, isFiltered;
+
+static NSString *CellIdentifier = @"Cell";
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+
+//    self.initialCities = [@[@"London", @"SF", @"Tokyo"] mutableCopy];
+//    [self.myTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:CellIdentifier];
     
-    initialCities = [[NSMutableArray alloc]initWithObjects:@"London", @"SF", @"Tokyo", nil];
+        self.initialCities = [[NSMutableArray alloc]initWithObjects:@"London", @"SF", @"Tokyo", nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -36,30 +48,28 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (isFiltered == YES)
+    if (_isFiltered == YES)
     {
-        return filteredCities.count;
+        return self.filteredCities.count;
     }
     else
     {
-        return initialCities.count;
+        return self.initialCities.count;
     }
 }
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
     
-    UITableViewCell
-    *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
-    if (isFiltered == YES)
+    if (self.isFiltered == YES)
     {
-        cell.textLabel.text = [filteredCities objectAtIndex:indexPath.row];
+        cell.textLabel.text = [self.filteredCities objectAtIndex:indexPath.row];
     }
     else
     {
-        cell.textLabel.text = [initialCities objectAtIndex:indexPath.row];
+        cell.textLabel.text = [self.initialCities objectAtIndex:indexPath.row];
     }
     
     return cell;
@@ -72,33 +82,33 @@
 {
     if(searchText.length == 0)
     {
-        isFiltered = NO;
+        self.isFiltered = NO;
     }
     else
     {
-        isFiltered = YES;
-        filteredCities = [[NSMutableArray alloc]init];
+        self.isFiltered = YES;
+        self.filteredCities = [[NSMutableArray alloc]init];
         
         //Fast enumerate
-        for (NSString * cityName in initialCities)
+        for (NSString * cityName in self.initialCities)
         {
             NSRange cityNameRange = [cityName rangeOfString:searchText options:NSCaseInsensitiveSearch];
             
             if (cityNameRange.location != NSNotFound)
             {
-                [filteredCities addObject:cityName];
+                [self.filteredCities addObject:cityName];
             }
         
         }
     }
     
     //Reload our table view
-    [myTableView reloadData];
+    [self.myTableView reloadData];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
-    [mySearchBar resignFirstResponder];
+    [self.mySearchBar resignFirstResponder];
 }
 
 @end
